@@ -15,14 +15,20 @@ var io = socketIO(server);
 io.on('connection', (socket)=>{
     console.log('New user connected ');
 
-    socket.emit('newMessage', {
-         from:"ohhYaa@gmail.com",
-         text: "Heyy you",
-         createdAt:12323423
-    });
+    // socket.emit('newMessage', {
+    //      from:"ohhYaa@gmail.com",
+    //      text: "Heyy you",
+    //      createdAt:12323423
+    // });
 
     socket.on('createMessage', (message)=>{
         console.log('createMessage', message);
+
+        io.emit('newMessage',{
+            from: message.from,
+            text:message.text,
+            createdAt : new Date().getTime()
+        });
     });
     socket.on('disconnect', ()=>{
         console.log('User was disconnected');
