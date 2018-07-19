@@ -1,6 +1,15 @@
 var socket = io();
     socket.on('connect', function(){
-        console.log('Connected to server');
+        var params = jQuery.deparam(window.location.search);
+        console.log(params);
+        socket.emit('join', params, function(err){
+            if (err){
+                alert(err);
+                window.location.href = '/'
+            }else{
+                console.log('successful entering')
+            }
+        });
     });
     
     function scrollToBottom () {
@@ -34,12 +43,31 @@ var socket = io();
         scrollToBottom();
     });
 
-    socket.emit('createMessage',{
-        from: 'jakir',
-        text : 'hi'
-    }, function(msg){
-        console.log('Got it', msg);
-    });
+    // socket.on('updateUserList', function(users){
+    //    // console.log('User list ', users);
+    //     var ol = jQuery('<ol></ol>');
+    //     users.forEach(function(user){
+    //         ol.append.jQuery('<li></li>').text(user));
+    //     });
+    //     jQuery('#users').html(ol);
+
+    // });
+    socket.on('updateUserList', function (users) {
+        var ol = jQuery('<ol></ol>');
+      
+        users.forEach(function (user) {
+          ol.append(jQuery('<li></li>').text(user));
+        });
+      
+        jQuery('#users').html(ol);
+      });
+      
+    // socket.emit('createMessage',{
+    //     from: 'jakir',
+    //     text : 'hi'
+    // }, function(msg){
+    //     console.log('Got it', msg);
+    // });
     socket.on('newLocationMessage', function(message){
         var formattedTime = moment(message.createdAt).format('h:mm a');
         var template = jQuery('#location-message-template').html();
